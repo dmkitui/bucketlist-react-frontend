@@ -17,7 +17,6 @@ class User extends Component {
     this.uploadingStatus = this.uploadingStatus.bind(this);
   }
   componentWillReceiveProps(nextProps) {
-    console.log('Mounted USER Header: ', nextProps.user);
     this.setState({
       user: nextProps.user,
     });
@@ -28,7 +27,6 @@ class User extends Component {
     this.setState({
       user,
     });
-    console.log('Fresh User: ', user);
     AuthAPI.updateUserAvatar(url)
       .then((res) => {
         if (res.status === 201) {
@@ -37,10 +35,8 @@ class User extends Component {
         }
       })
       .catch((error) => {
-        console.log('Save Avatar Error: ', error);
         ModalDialogs.error('Some Error Occurred.');
       });
-    console.log('Updated User: ', this.state.user);
   }
   uploadingStatus(val) {
     if (val) {
@@ -50,7 +46,6 @@ class User extends Component {
     }
   }
   updateUsername(e) {
-    console.log('Update username');
     ModalDialogs.prompt({
       title: 'Update Username',
       text: 'Choose a super Unique username',
@@ -59,10 +54,8 @@ class User extends Component {
     }).then((username) => {
       AuthAPI.updateUsername(username)
         .then((res) => {
-          console.log('Username Update: ', res);
         })
         .catch((error) => {
-          console.log('Username Error: ', error);
         });
     }).catch((error) => {
       console.log('Errors: ', error);
@@ -138,9 +131,6 @@ class User extends Component {
 }
 
 class ActionButton extends Component {
-  constructor(props) {
-    super(props);
-  }
   newBucketlist(e) {
     ModalDialogs.prompt({
       title: 'Add Item Bucketlist',
@@ -190,9 +180,10 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false,
-      user: null,
+      loggedIn: this.props.loggedIn,
+      user: this.props.user,
     };
+    console.log('User: ', this.props.user);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -204,7 +195,7 @@ class Header extends Component {
     return (
       <div className="row topBannner">
         <div className="col-3 banner-sect">
-          <User logStatus={this.state.loggedIn} user={this.state.user} />
+          <User logStatus={this.state.loggedIn} user={this.state.user} logout={this.props.updateLoggedInState}/>
         </div>
         <div className="col-6 banner-sect">
           <Titlebox />
