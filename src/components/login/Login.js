@@ -86,9 +86,9 @@ class Login extends Component {
       <div className="login-box">
         <form onSubmit={event => this.loginUser(event)}>
           <div className={this.state.loading ? 'login-form loading' : 'login-form'}>
-            <div className="anim" hidden={!this.state.loading}>
+            <div className="anim text-center" hidden={!this.state.loading}>
               <Animation type="spinningBubbles" color="green" />
-              <span>Login you in...</span>
+              Login you in...
             </div>
             <div hidden={this.state.loading}>
               <label className="label-text">Email Address:</label>

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import './common-styles.css';
 import Dropzone from 'react-dropzone';
 import request from 'superagent';
+import './common-styles.css';
+
 import ModalDialogs from './Dialogs';
 
 class FileUploader extends Component {
@@ -11,7 +12,7 @@ class FileUploader extends Component {
     this.state =({
       avatarUrl: '',
       uploading: false,
-      percentage: 0
+      percentage: 0,
     });
     this.onProgress = this.onProgress.bind(this);
   }
