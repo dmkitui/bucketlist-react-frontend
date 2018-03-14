@@ -1,0 +1,170 @@
+.item-container {
+    margin: 10px auto;
+    border-bottom: solid 1px gray;
+    min-height: 110px;
+    width: 90%;
+    border-radius: 10px;
+}
+.item-container:hover {
+    background-color: beige;
+}
+.selected-item {
+    background-color: beige;
+    border: solid 1px gray;
+}
+
+.title-view {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+}
+.holder {
+    height:85%;
+    margin: inherit;
+}
+.index {
+    margin-top: 10px;
+    display: inline-block;
+    width: 30px;
+    padding-top: 5px;
+    /*border:solid 1px red;*/
+}
+.item-title {
+    display: inline-block;
+    font-family: Papyrus;
+    font-size: 1.9em;
+    text-align: left;
+    margin-top: 10px;
+    width: 95%;
+}
+.item-title-expanded {
+    /*display: inline-block;*/
+    font-family: Papyrus;
+    font-size: 3em;
+    text-align: left;
+    margin: 10px 0 0 30px;
+    color: blue;
+    text-transform: capitalize;
+}
+.expanded-metadata {
+    text-align: left;
+}
+
+.item-time, .item-count, .expanded-metadata{
+    color: darkgreen;
+}
+.value, .expanded-date {
+    font-weight: bold;
+}
+.action-buttons {
+    /*margin: auto;*/
+    margin: 15px 0 0 0;
+}
+.empty-list {
+    margin-top: 80px;
+}
+
+.action-buttons > .btn {
+  border: solid 1px green;
+  background-color: white;
+  margin-left: 5px;
+}
+.delete:hover {
+  color: white;
+  background-color: red;
+}
+.edit:hover {
+  background-color: blue;
+  color: white;
+}
+.add-item:hover{
+  background-color: green;
+  color: white;
+}
+.date_modified {
+    margin-left: 30px;
+}
+.metadata {
+    font-size: 0.9em;
+    margin: 5px 0 0 45px;
+}
+.table-holder > table {
+    margin: 0 auto;
+    /*border: solid 1px blue;*/
+    table-layout: fixed;
+    width: 95%;
+    overflow: hidden
+}
+.table-holder > td:first-child {
+    width: 50px;
+    text-align: right;
+}
+td {
+    padding-left: 10px;
+    text-align: left;
+    /*border: solid 1px blue;*/
+    table-layout: fixed
+}
+
+tr > td {
+    padding-left: 10px;
+}
+
+.table-rows > tr:nth-child(even){
+  background-color: #4C8BF5;
+  color: #fff;
+}
+
+.date-field {
+    width: 230px;
+    text-align: center;
+}
+.item-name {
+    width: 450px;
+}
+.index-field{
+    width: 45px;
+    text-align: center;
+}
+
+.status-btn {
+    max-width: 350px;
+}
+
+th {
+    text-align: center !important;
+    width: 150px;
+    border-bottom: solid 1px gray;
+}
+
+.test {
+    /*border: solid 1px red;*/
+}
+
+.table-holder {
+    /*border: solid 1px lightgray;*/
+    margin-top: 15px;
+}
+
+.state-button {
+    margin: 5px auto;
+    border: solid 1px green !important;
+}
+.table-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+.expanded-metadata {
+    display: block;
+    float: left;
+    margin-left: 75px;
+    margin-top: -35px;
+    min-width: 55px;
+}
+.expanded-items-view {
+    margin-top: 30px;
+}
+.no-items {
+    margin-bottom: 30px;
+}
