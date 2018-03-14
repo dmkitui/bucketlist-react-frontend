@@ -7,91 +7,101 @@ import Animation from '../../helpers/animation';
 import AuthAPI from '../../api/Auth';
 
 class BucketlistView extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       bucketlists: [],
       loading: true,
-      selectedBucketlist: null
+      selectedBucketlist: null,
     };
     this.clickedItem = this.clickedItem.bind(this);
     this.updateAfterChanges = this.updateAfterChanges.bind(this);
   }
 
   componentDidMount() {
-    let _this = this;
+    const _this = this;
     AuthAPI.getBucketlists()
       .then((response) => {
-        let data = response.data;
-        console.log('DATA: ', response)
-        if(data.length > 0) {
-          let pageInfo = data.pop();
+        const data = response.data;
+        console.log('DATA: ', response);
+        if (data.length > 0) {
+          const pageInfo = data.pop();
         }
         // Sort the data by ID.
         _this.setState({
           bucketlists: data,
-          loading: false
+          loading: false,
         });
         console.log('BUCKETLISTS: ', this.state.bucketlists);
-    }).catch((error) => {
-      console.log('FETCH ERRORS: ', error);
-      let errorText = error.message;
-      this.state.loading = false;
-      ModalDialogs.error(errorText);
-    });
+      }).catch((error) => {
+        console.log('FETCH ERRORS: ', error);
+        const errorText = error.message;
+        this.state.loading = false;
+        ModalDialogs.error(errorText);
+      });
   }
-  
+
   updateAfterChanges(id) {
-    this.state.bucketlists.splice((id - 1), 1);
-    this.setState({bucketlists: this.state.bucketlists});
+    console.log('Updating? Remove ID- ', id);
+    console.log('Current: ', this.state.bucketlists);
+
+    const bucketlist = this.state.bucketlists.filter((x) => {
+      if (x.id === id) {
+        return x;
+      }
+    });
+    console.log('Current deleted buckeltist: ', bucketlist[0], 'Index of: ', this.state.bucketlists.indexOf(bucketlist[0]));
+    const indexToDelete = this.state.bucketlists.indexOf(bucketlist[0]);
+    this.state.bucketlists.splice(indexToDelete, 1);
+    this.setState({ bucketlists: this.state.bucketlists });
+    console.log('After deletion: ', this.state.bucketlists);
   }
-  
+
   clickedItem(id, el) {
-    if(id === this.state.selectedBucketlist){
-      this.setState({selectedBucketlist: false});
+    if (id === this.state.selectedBucketlist) {
+      this.setState({ selectedBucketlist: false });
     } else {
-      scrollIntoView(el, {time: 500});
-      this.setState({selectedBucketlist: id});
+      scrollIntoView(el, { time: 500 });
+      this.setState({ selectedBucketlist: id });
     }
   }
-  
-  renderBucketlists (bucketlists) {
+
+  renderBucketlists(bucketlists) {
     if (bucketlists.length > 0) {
       return bucketlists.map((bucketlist, index) => (
-        <ItemView key={bucketlist.id}
-                  count={index}
-                  updateUI={this.updateAfterChanges}
-                  bucketlist={bucketlist}
-                  clickEvent={this.clickedItem}
-                  showItems={(index === (this.state.selectedBucketlist - 1))}/>
+        <ItemView
+          key={bucketlist.id}
+          count={index}
+          updateUI={this.updateAfterChanges}
+          bucketlist={bucketlist}
+          clickEvent={this.clickedItem}
+          showItems={(index === (this.state.selectedBucketlist - 1))}
+        />
       ));
-    } else {
-      return(
-        <div className="empty-list">
-          <span> No bucketlists to display</span>
-        </div>
-      )
     }
+    return (
+      <div className="empty-list">
+        <span> No bucketlists to display</span>
+      </div>
+    );
   }
-  
-  render () {
+  render() {
     const currentBucketlists = this.renderBucketlists(this.state.bucketlists);
-    if(this.state.loading) {
+    if (this.state.loading) {
       return (
         <section>
           <div className="anim">
-            <Animation type="bubbles" color="green"/>
+            <Animation type="bubbles" color="green" />
             <span>Fetching Your Bucketlists</span>
           </div>
         </section>
-      )
-    } else {
-      return (
-        <section>
-          {currentBucketlists}
-        </section>
-      )
+      );
     }
+    return (
+      <section>
+        {currentBucketlists}
+      </section>
+    );
   }
 }
 export default BucketlistView;
