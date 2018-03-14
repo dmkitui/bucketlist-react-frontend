@@ -8,7 +8,6 @@ hr {
   width: 90%;
 }
 .main-view {
-  border: solid 1px green;
   overflow: scroll;
   margin: 0 auto;
   -webkit-flex: 1 0 auto;
