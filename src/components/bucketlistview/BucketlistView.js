@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import scrollIntoView from 'scroll-into-view';
 import './BucketlistView.css';
 import ItemView from './ListItemView';
@@ -22,12 +23,10 @@ class BucketlistView extends Component {
 
   componentDidMount() {
     const _this = this;
-    console.log('State: ', this.state.loggedIn);
     if (!this.state.loggedIn) {
       ModalDialogs.errorStatus('You are not logged in. Log in first.');
       return;
     }
-    console.log('Why still running?');
     if (!Helpers.isTokenValid()) {
       this.setState({ loading: false });
       return;
@@ -52,6 +51,19 @@ class BucketlistView extends Component {
         ModalDialogs.error(errorText);
       });
   }
+  componentWillReceiveProps(nextProps) {
+    console.log('New stuff in? ', nextProps.newItem);
+    this.state.bucketlists.push(nextProps.newItem);
+    this.setState({
+      bucketlists: this.state.bucketlists,
+    });
+    console.log('ID: ', nextProps.newItem.id, ' STATE: ', this.selectedItem);
+    const ref_id = `itemNo: ${nextProps.newItem.id - 1}`;
+    const el = ReactDOM.findDOMNode(this.selectedItem);
+    console.log('Element: ', 'ID: ', ref_id, 'ELEMENT: ', el, ' array: ', this.selectedItem)
+//    this.clickedItem(nextProps.newItem.id, el);
+    el.click();
+  }
 
   updateAfterChanges(id) {
     const bucketlist = this.state.bucketlists.filter(x => (x.id === id))[0];
@@ -74,6 +86,7 @@ class BucketlistView extends Component {
       return bucketlists.map((bucketlist, index) => (
         <ItemView
           key={bucketlist.id}
+          ref={focused => this.selectedItem = focused}
           count={index}
           updateUI={this.updateAfterChanges}
           bucketlist={bucketlist}

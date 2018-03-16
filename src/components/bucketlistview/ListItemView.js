@@ -32,6 +32,8 @@ class ItemView extends Component {
   }
   addItem(event, bucketlist) {
     if (!Helpers.isTokenValid()) {
+      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+      event.stopPropagation();
       return;
     }
     ModalDialogs.prompt({
@@ -83,11 +85,12 @@ class ItemView extends Component {
   }
   editBucketlistTitle(e, bucketlist) {
     if (!Helpers.isTokenValid()) {
+      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+      e.stopPropagation();
       return;
     }
     const title = bucketlist.name;
     const id = bucketlist.id;
-    console.log('Editing!!: ', title, id);
 
     ModalDialogs.prompt({
       title: 'Edit Bucketlist?',
@@ -139,6 +142,8 @@ class ItemView extends Component {
 
   onDeleteBucketlist(e, id) {
     if (!Helpers.isTokenValid()) {
+      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+      e.stopPropagation();
       return;
     }
     ModalDialogs.prompt({

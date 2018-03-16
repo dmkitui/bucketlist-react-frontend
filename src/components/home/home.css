@@ -12,9 +12,13 @@ hr {
   margin: 0 auto;
   -webkit-flex: 1 0 auto;
   height: 750px;
-  width: 90%;
+  width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.main {
+  border-right: solid 1px red;
 }
 
 .page {

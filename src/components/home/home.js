@@ -13,9 +13,10 @@ class MainView extends Component {
     this.state = {
       loggedIn: this.isLoggedIn(),
       user: JSON.parse(localStorage.getItem('user')),
-      bucketlists: [],
+      newBucketlist: null,
     };
     this.updateLoginStatus = this.updateLoginStatus.bind(this);
+    this.newBucketlist = this.newBucketlist.bind(this);
   }
 
   isLoggedIn() {
@@ -35,11 +36,17 @@ class MainView extends Component {
       });
     }
   }
+  newBucketlist(res) {
+    console.log('New item added? ', res);
+    this.setState({
+      newBucketlist: res,
+    });
+  }
   render() {
     return (
       <div className="page">
         <div className="header">
-          <Header user={this.state.user} loggedIn={this.state.loggedIn} updateLoggedInState={this.updateLoginStatus} />
+          <Header user={this.state.user} loggedIn={this.state.loggedIn} updateLoggedInState={this.updateLoginStatus} addNew={this.newBucketlist}/>
         </div>
         <hr />
         <div className="main-view">
@@ -47,7 +54,7 @@ class MainView extends Component {
             <Login loginState={this.updateLoginStatus} />
           </div>
           <div hidden={!this.state.loggedIn}>
-            <BucketlistView loggedIn={this.state.loggedIn} />
+            <BucketlistView loggedIn={this.state.loggedIn} newItem={this.state.newBucketlist} />
           </div>
         </div>
         <hr />
