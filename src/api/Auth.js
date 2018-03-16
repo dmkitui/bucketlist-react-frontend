@@ -1,5 +1,8 @@
 import axios from 'axios';
+import Helpers from '../helpers/Utilities';
 
+
+const source = axios.CancelToken.source();
 const axiosBucketlistManipulations = axios.create({
   baseURL: 'https://flask-api-bucketlist.herokuapp.com/api/v1/bucketlists/',
   timeout: 60000,
@@ -12,9 +15,20 @@ const axiosUpdateProfile = axios.create({
   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
 
+//axiosBucketlistManipulations.interceptors.request.use((config) => {
+//  console.log('Interceptors....');
+//  if (Helpers.isTokenValid(localStorage.getItem('token'))) {
+//    console.log('Valid!');
+//    return Promise.resolve(config);
+//  }
+//  console.log('Invalid? ');
+//  return
+//}, (err => Promise.reject(err)));
+
+
 const AuthAPI = {
   getBucketlists() {
-    return axiosBucketlistManipulations.get();
+    return axiosBucketlistManipulations.get('');
   },
   login(email, password) {
     const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -41,7 +55,7 @@ const AuthAPI = {
     return axiosUpdateProfile.post('', { avatar_url: url });
   },
   updateUsername(username) {
-    return axiosUpdateProfile.post('', { username: username });
+    return axiosUpdateProfile.post('', { username });
   },
 };
 export default AuthAPI;
