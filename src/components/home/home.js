@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import decode from 'jwt-decode';
 import Login from '../login/Login';
 import Header from '../header/Header';
+import Helpers from '../../helpers/Utilities';
 import BucketlistView from '../bucketlistview/BucketlistView';
 import './home.css';
 
@@ -17,23 +18,9 @@ class MainView extends Component {
     this.updateLoginStatus = this.updateLoginStatus.bind(this);
   }
 
-  isTokenValid(token) {
-    try {
-      const decoded = decode(token);
-      if (decoded.exp > (Date.now() / 1000)) {
-        return true;
-      }
-      return false;
-    } catch (error) {
-      return false;
-    }
-  }
   isLoggedIn() {
     const token = localStorage.getItem('token');
-    if (token && this.isTokenValid(token)) {
-      return true;
-    }
-    return false;
+    return (token && Helpers.isTokenValid());
   }
 
   updateLoginStatus(user) {
@@ -60,7 +47,7 @@ class MainView extends Component {
             <Login loginState={this.updateLoginStatus} />
           </div>
           <div hidden={!this.state.loggedIn}>
-            <BucketlistView />
+            <BucketlistView loggedIn={this.state.loggedIn} />
           </div>
         </div>
         <hr />

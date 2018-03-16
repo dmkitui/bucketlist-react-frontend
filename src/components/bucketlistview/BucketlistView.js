@@ -5,6 +5,7 @@ import ItemView from './ListItemView';
 import ModalDialogs from '../../helpers/Dialogs';
 import Animation from '../../helpers/animation';
 import AuthAPI from '../../api/Auth';
+import Helpers from '../../helpers/Utilities';
 
 class BucketlistView extends Component {
   constructor(props) {
@@ -13,6 +14,7 @@ class BucketlistView extends Component {
       bucketlists: [],
       loading: true,
       selectedBucketlist: null,
+      loggedIn: this.props.loggedIn,
     };
     this.clickedItem = this.clickedItem.bind(this);
     this.updateAfterChanges = this.updateAfterChanges.bind(this);
@@ -20,6 +22,16 @@ class BucketlistView extends Component {
 
   componentDidMount() {
     const _this = this;
+    console.log('State: ', this.state.loggedIn);
+    if (!this.state.loggedIn) {
+      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+      return;
+    }
+    console.log('Why still running?');
+    if (!Helpers.isTokenValid()) {
+      this.setState({ loading: false });
+      return;
+    }
     AuthAPI.getBucketlists()
       .then((response) => {
         const data = response.data;
@@ -42,19 +54,10 @@ class BucketlistView extends Component {
   }
 
   updateAfterChanges(id) {
-    console.log('Updating? Remove ID- ', id);
-    console.log('Current: ', this.state.bucketlists);
-
-    const bucketlist = this.state.bucketlists.filter((x) => {
-      if (x.id === id) {
-        return x;
-      }
-    });
-    console.log('Current deleted buckeltist: ', bucketlist[0], 'Index of: ', this.state.bucketlists.indexOf(bucketlist[0]));
-    const indexToDelete = this.state.bucketlists.indexOf(bucketlist[0]);
+    const bucketlist = this.state.bucketlists.filter(x => (x.id === id))[0];
+    const indexToDelete = this.state.bucketlists.indexOf(bucketlist);
     this.state.bucketlists.splice(indexToDelete, 1);
     this.setState({ bucketlists: this.state.bucketlists });
-    console.log('After deletion: ', this.state.bucketlists);
   }
 
   clickedItem(id, el) {

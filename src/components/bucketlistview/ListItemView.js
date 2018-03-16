@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import './ListItemView.css';
-import dateTimeFormat from '../../helpers/Utilities';
+import Helpers from '../../helpers/Utilities';
 import ItemsExpandedView from './ItemsExpandedView';
 import AuthAPI from '../../api/Auth';
 import ModalDialogs from '../../helpers/Dialogs';
@@ -31,19 +31,22 @@ class ItemView extends Component {
     }
   }
   addItem(event, bucketlist) {
+    if (!Helpers.isTokenValid()) {
+      return;
+    }
     ModalDialogs.prompt({
       title: 'Add Item Bucketlist',
       text: null,
       content: { element: 'input', attributes: { placeholder: 'New Item', type: 'text' } },
       ok: 'Add Item',
-    }).then((item_name) => {
-      console.log('Item Name: ', item_name);
-      if ((item_name === '') || (item_name === 'ok')) {
+    }).then((itemName) => {
+      console.log('Item Name: ', itemName);
+      if ((itemName === '') || (itemName === 'ok')) {
         console.log('Nope!!!');
         ModalDialogs.error('Item title cannot be blank!');
       } else {
         console.log('Proceed to backend...');
-        AuthAPI.addItem(bucketlist.id, item_name)
+        AuthAPI.addItem(bucketlist.id, itemName)
           .then((resp) => {
             if (resp.status === 201) {
               const item = resp.data;
@@ -79,6 +82,9 @@ class ItemView extends Component {
     event.stopPropagation();
   }
   editBucketlistTitle(e, bucketlist) {
+    if (!Helpers.isTokenValid()) {
+      return;
+    }
     const title = bucketlist.name;
     const id = bucketlist.id;
     console.log('Editing!!: ', title, id);
@@ -132,8 +138,9 @@ class ItemView extends Component {
   }
 
   onDeleteBucketlist(e, id) {
-    console.log('Delete Bucketlist Number: ', id);
-
+    if (!Helpers.isTokenValid()) {
+      return;
+    }
     ModalDialogs.prompt({
       title: 'Delete Bucketlist?',
       text: 'Once deleted, you cant undo this!',
@@ -207,14 +214,14 @@ class ItemView extends Component {
               <div className={this.state.showItems ? 'item-title-expanded' : 'item-title'}>{this.props.count + 1}. {bucketlist.name}</div>
               <br />
               <div className="expanded-metadata" hidden={!this.state.showItems}>
-                Created on: <span className="expanded-date">{dateTimeFormat(this.props.bucketlist.date_created)}</span>
+                Created on: <span className="expanded-date">{Helpers.dateTimeFormat(this.props.bucketlist.date_created)}</span>
                 <br />
-                Last Activity: <span className="expanded-date">{dateTimeFormat(this.props.bucketlist.date_modified)}</span>
+                Last Activity: <span className="expanded-date">{Helpers.dateTimeFormat(this.props.bucketlist.date_modified)}</span>
               </div>
             </div>
             <div className="metadata text-left" hidden={this.state.showItems}>
-              <span className="item-time">Created: <span className="value">{dateTimeFormat(this.props.bucketlist.date_created)}</span></span>
-              <span className="item-time date_modified">Last Activity: <span className="value">{dateTimeFormat(this.props.bucketlist.date_modified)}</span></span>
+              <span className="item-time">Created: <span className="value">{Helpers.dateTimeFormat(this.props.bucketlist.date_created)}</span></span>
+              <span className="item-time date_modified">Last Activity: <span className="value">{Helpers.dateTimeFormat(this.props.bucketlist.date_modified)}</span></span>
               <br />
               {bucketlist.items.length > 0 ? <span className="item-count"><span className="value">{bucketlist.items.length}</span> Bucketlist Items</span> : <span className="item-count">No items yet.</span>}
             </div>
