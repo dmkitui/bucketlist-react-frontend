@@ -14,9 +14,19 @@ class MainView extends Component {
       loggedIn: this.isLoggedIn(),
       user: JSON.parse(localStorage.getItem('user')),
       newBucketlist: null,
+      scrollable: false,
     };
     this.updateLoginStatus = this.updateLoginStatus.bind(this);
     this.newBucketlist = this.newBucketlist.bind(this);
+    this.scrollManager = this.scrollManager.bind(this);
+  }
+  componentDidMount() {
+    const target = document.getElementsByClassName('main-view')[0];
+    target.addEventListener('scroll', this.scrollManager);
+  }
+  componentWillUnmount() {
+    const target = document.getElementsByClassName('main-view')[0];
+    target.removeEventListener('scroll', this.scrollManager);
   }
 
   isLoggedIn() {
@@ -36,6 +46,27 @@ class MainView extends Component {
       });
     }
   }
+  scrollManager() {
+    const target = document.getElementsByClassName('main-view')[0];
+    console.log('Scrolling?: ', target.clientHeight, 'ScrollHeight: ', target.scrollHeight, ' From Top: ', target.scrollTop);
+    if (target.scrollHeight > target.clientHeight) {
+      console.log('Time to scroll?');
+      this.setState({
+        scrollable: true,
+      });
+    } else {
+      this.setState({
+        scrollable: false,
+      });
+    }
+
+    if ((target.scrollTop + target.clientHeight) > target.scrollHeight) {
+      console.log('Reached top?');
+      document.getElementsByClassName('scroll-indicator-bottom')[0].classList.add('reached-bottom');
+    } else {
+      document.getElementsByClassName('scroll-indicator-bottom')[0].classList.remove('reached-bottom');
+    }
+  }
   newBucketlist(res) {
     console.log('New item added? ', res);
     this.setState({
@@ -46,9 +77,10 @@ class MainView extends Component {
     return (
       <div className="page">
         <div className="header">
-          <Header user={this.state.user} loggedIn={this.state.loggedIn} updateLoggedInState={this.updateLoginStatus} addNew={this.newBucketlist}/>
+          <Header user={this.state.user} loggedIn={this.state.loggedIn} updateLoggedInState={this.updateLoginStatus} addNew={this.newBucketlist} />
         </div>
         <hr />
+        <span className="scroll-indicator-top" hidden={!this.state.scrollable} />
         <div className="main-view">
           <div hidden={this.state.loggedIn}>
             <Login loginState={this.updateLoginStatus} />
@@ -57,6 +89,7 @@ class MainView extends Component {
             <BucketlistView loggedIn={this.state.loggedIn} newItem={this.state.newBucketlist} />
           </div>
         </div>
+        <span className="scroll-indicator-bottom" hidden={!this.state.scrollable} />
         <hr />
         <div className="footer">Footer</div>
       </div>
