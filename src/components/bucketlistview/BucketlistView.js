@@ -53,15 +53,14 @@ class BucketlistView extends Component {
   }
   componentWillReceiveProps(nextProps) {
     console.log('New stuff in? ', nextProps.newItem);
+    if (nextProps.newItem === this.props.newItem) {
+      return;
+    }
     this.state.bucketlists.push(nextProps.newItem);
     this.setState({
       bucketlists: this.state.bucketlists,
     });
-    console.log('ID: ', nextProps.newItem.id, ' STATE: ', this.selectedItem);
-    const ref_id = `itemNo: ${nextProps.newItem.id - 1}`;
     const el = ReactDOM.findDOMNode(this.selectedItem);
-    console.log('Element: ', 'ID: ', ref_id, 'ELEMENT: ', el, ' array: ', this.selectedItem)
-//    this.clickedItem(nextProps.newItem.id, el);
     el.click();
   }
 
