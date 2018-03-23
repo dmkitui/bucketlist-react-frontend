@@ -25,3 +25,16 @@ hr {
   width: 100%;
   height:100%;
 }
+
+.scroll-indicator-bottom, .scroll-indicator-top {
+  display:block;
+  margin: 2px 0 2px 0;
+  border:none;
+  color:white;
+  height:3px;
+  background:black;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 650, from(green), to(#fff));
+}
+.reached-bottom {
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 650, from(red), to(#fff)) !important;
+}
