@@ -1,66 +1,62 @@
 import axios from 'axios';
+import Helpers from '../helpers/Utilities';
 
-const headers = new Headers({ 'Content-Type': 'application/json' });
-const baseUrl = 'https://flask-api-bucketlist.herokuapp.com/api/v1/bucketlists/';  // 'http://127.0.0.1:5000/api/v1/bucketlists/';  //
 
-let optionsGenerator = () => {
-  let token = localStorage.getItem('token');
-  let user_token = 'Bearer ' + token;
-  return { headers: {'Content-Type': 'application/json', 'Authorization': user_token}};
-}
+const source = axios.CancelToken.source();
+const axiosBucketlistManipulations = axios.create({
+  baseURL: 'https://flask-api-bucketlist.herokuapp.com/api/v1/bucketlists/',
+  timeout: 60000,
+  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+});
 
-let AuthAPI = {
+const axiosUpdateProfile = axios.create({
+  baseURL: 'https://flask-api-bucketlist.herokuapp.com/api/v1/auth/update',
+  timeout: 60000,
+  headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+});
+
+//axiosBucketlistManipulations.interceptors.request.use((config) => {
+//  console.log('Interceptors....');
+//  if (Helpers.isTokenValid(localStorage.getItem('token'))) {
+//    console.log('Valid!');
+//    return Promise.resolve(config);
+//  }
+//  console.log('Invalid? ');
+//  return
+//}, (err => Promise.reject(err)));
+
+
+const AuthAPI = {
   getBucketlists() {
-    let options = optionsGenerator();
-    return axios.get(baseUrl, options);
+    return axiosBucketlistManipulations.get('');
   },
-  
   login(email, password) {
+    const headers = new Headers({ 'Content-Type': 'application/json' });
     const loginUrl = 'https://flask-api-bucketlist.herokuapp.com/api/v1/auth/login'; // 'http://127.0.0.1:5000/api/v1/auth/login'; //
-    let body = {'user_email': email, 'user_password': password};
+    const body = { user_email: email, user_password: password };
     return axios.post(loginUrl, body, headers);
   },
   deleteBucketlist(id) {
-    const deleteUrl = baseUrl + parseInt(id, 10);
-    let options = optionsGenerator();
-    return axios.delete(deleteUrl, options);
+    const deleteUrl = parseInt(id, 10);
+    return axiosBucketlistManipulations.delete(deleteUrl.toString());
   },
   editBucketlistTitle(id, newTitle) {
-    let editBucketlistUrl = baseUrl + id;
-    let body = { 'name': newTitle };
-    let options = optionsGenerator();
-    return axios.put(editBucketlistUrl, body, options);
+    const editUrl = parseInt(id, 10);
+    return axiosBucketlistManipulations.put(editUrl.toString(), { name: newTitle });
   },
   newBucketlist(title) {
-    let options = optionsGenerator();
-    let body = { 'name': title };
-    
-    return axios.post(baseUrl, body, options);
+    return axiosBucketlistManipulations.post('', { name: title });
   },
-  addItem(id, item_name){
-    let options = optionsGenerator();
-    let addItemUrl = baseUrl + id + '/items/';
-    let body = { 'item_name': item_name };
-    return axios.post(addItemUrl, body, options);
-  },
-  fetchBucketlist(id) {
-    let options = optionsGenerator();
-    let addItemUrl = baseUrl + id;
-    return axios.get(baseUrl, options);
+  addItem(id, itemName) {
+    const addItemUrl = `${parseInt(id, 10)}/items/`;
+    return axiosBucketlistManipulations.post(addItemUrl, { item_name: itemName });
   },
   updateUserAvatar(url) {
-    let options = optionsGenerator();
-    let updateUrl = 'https://flask-api-bucketlist.herokuapp.com/api/v1/auth/update';  // 'http://127.0.0.1:5000/api/v1/auth/update';
-    let body = { 'avatar_url': url };
-    console.log('DB URL: ', url)
-    return axios.post(updateUrl, body, options);
+    return axiosUpdateProfile.post('', { avatar_url: url });
   },
   updateUsername(username) {
-    let options = optionsGenerator();
-    let updateUrl = 'https://flask-api-bucketlist.herokuapp.com/api/v1/auth/update';  // 'http://127.0.0.1:5000/api/v1/auth/update';
-    let body = { 'username': username };
-    return axios.post(updateUrl, body, options);
-  }
+    return axiosUpdateProfile.post('', { username });
+  },
 };
 export default AuthAPI;
 

@@ -8,17 +8,33 @@ hr {
   width: 90%;
 }
 .main-view {
-  border: solid 1px green;
   overflow: scroll;
   margin: 0 auto;
   -webkit-flex: 1 0 auto;
   height: 750px;
-  width: 90%;
+  width: 100%;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+
+.main {
+  border-right: solid 1px red;
 }
 
 .page {
   width: 100%;
   height:100%;
+}
+
+.scroll-indicator-bottom, .scroll-indicator-top {
+  display:block;
+  margin: 2px 0 2px 0;
+  border:none;
+  color:white;
+  height:3px;
+  background:black;
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 650, from(green), to(#fff));
+}
+.reached-bottom {
+  background: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 650, from(red), to(#fff)) !important;
 }

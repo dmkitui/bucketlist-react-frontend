@@ -7,6 +7,7 @@
     "bootstrap": "^4.0.0",
     "jquery": "^3.3.1",
     "jwt-decode": "^2.2.0",
+    "moment": "^2.21.0",
     "popper.js": "^1.14.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
@@ -14,6 +15,7 @@
     "react-dropzone": "^4.2.8",
     "react-scripts": "1.1.1",
     "reactstrap": "^5.0.0-beta.2",
+    "scroll-into-view": "^1.9.1",
     "superagent": "^3.8.2",
     "sweetalert": "^2.1.0"
   },

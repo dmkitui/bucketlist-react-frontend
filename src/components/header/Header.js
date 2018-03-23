@@ -131,6 +131,9 @@ class User extends Component {
 }
 
 class ActionButton extends Component {
+  constructor(props) {
+    super(props);
+  }
   newBucketlist(e) {
     ModalDialogs.prompt({
       title: 'Add Item Bucketlist',
@@ -144,6 +147,8 @@ class ActionButton extends Component {
               if (res.status === 201) {
                 ModalDialogs.success('New Bucketlist Created Successfully.');
               }
+              res.data.items = [];
+              this.props.addnew(res.data);
             })
             .catch((error) => {
               if (error.response !== undefined) {
@@ -178,18 +183,23 @@ const Titlebox = props => (
 
 class Header extends Component {
   constructor(props) {
+    console.log('Props Header: ', props)
     super(props);
     this.state = {
       loggedIn: this.props.loggedIn,
       user: this.props.user,
     };
-    console.log('User: ', this.props.user);
+    this.addNewbucketlist = this.addNewbucketlist.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
       user: nextProps.user,
       loggedIn: nextProps.loggedIn
     });
+  }
+  addNewbucketlist(res) {
+    console.log('Added?');
+    this.props.addNew(res);
   }
   render() {
     return (
@@ -201,7 +211,7 @@ class Header extends Component {
           <Titlebox />
         </div>
         <div className="col-3 banner-sect">
-          <ActionButton logStatus={this.props.loggedIn} />
+          <ActionButton logStatus={this.props.loggedIn} addnew={this.addNewbucketlist} />
         </div>
       </div>
     );
