@@ -14,18 +14,6 @@ const axiosUpdateProfile = axios.create({
   timeout: 60000,
   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
 });
-
-//axiosBucketlistManipulations.interceptors.request.use((config) => {
-//  console.log('Interceptors....');
-//  if (Helpers.isTokenValid(localStorage.getItem('token'))) {
-//    console.log('Valid!');
-//    return Promise.resolve(config);
-//  }
-//  console.log('Invalid? ');
-//  return
-//}, (err => Promise.reject(err)));
-
-
 const AuthAPI = {
   getBucketlists() {
     return axiosBucketlistManipulations.get('');
@@ -56,6 +44,14 @@ const AuthAPI = {
   },
   updateUsername(username) {
     return axiosUpdateProfile.post('', { username });
+  },
+  completeItem(itemId, bucketlistId) {
+    const url = `${parseInt(bucketlistId, 10)}/items/${parseInt(itemId, 10)}`;
+    return axiosBucketlistManipulations.put(url, { done: true });
+  },
+  editItemName(itemId, bucketlistId, newName) {
+    const url = `${parseInt(bucketlistId, 10)}/items/${parseInt(itemId, 10)}`;
+    return axiosBucketlistManipulations.put(url, { item_name: newName });
   },
 };
 export default AuthAPI;

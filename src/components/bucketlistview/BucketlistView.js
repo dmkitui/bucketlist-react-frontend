@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import scrollIntoView from 'scroll-into-view';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './BucketlistView.css';
 import ItemView from './ListItemView';
 import ModalDialogs from '../../helpers/Dialogs';
 import Animation from '../../helpers/animation';
 import AuthAPI from '../../api/Auth';
-import Helpers from '../../helpers/Utilities';
 
 class BucketlistView extends Component {
   constructor(props) {
@@ -20,21 +20,16 @@ class BucketlistView extends Component {
     this.clickedItem = this.clickedItem.bind(this);
     this.updateAfterChanges = this.updateAfterChanges.bind(this);
   }
-
   componentDidMount() {
     const _this = this;
     if (!this.state.loggedIn) {
       ModalDialogs.errorStatus('You are not logged in. Log in first.');
-      return;
-    }
-    if (!Helpers.isTokenValid()) {
-      this.setState({ loading: false });
+      _this.setState({ loading: false });
       return;
     }
     AuthAPI.getBucketlists()
       .then((response) => {
         const data = response.data;
-        console.log('DATA: ', response);
         if (data.length > 0) {
           const pageInfo = data.pop();
         }
@@ -43,16 +38,13 @@ class BucketlistView extends Component {
           bucketlists: data,
           loading: false,
         });
-        console.log('BUCKETLISTS: ', this.state.bucketlists);
       }).catch((error) => {
-        console.log('FETCH ERRORS: ', error);
         const errorText = error.message;
         this.state.loading = false;
         ModalDialogs.error(errorText);
       });
   }
   componentWillReceiveProps(nextProps) {
-    console.log('New stuff in? ', nextProps.newItem);
     if (nextProps.newItem === this.props.newItem) {
       return;
     }
@@ -61,7 +53,7 @@ class BucketlistView extends Component {
       bucketlists: this.state.bucketlists,
     });
     const el = ReactDOM.findDOMNode(this.selectedItem);
-    el.click();
+//    el.click();
   }
 
   updateAfterChanges(id) {
@@ -79,7 +71,6 @@ class BucketlistView extends Component {
       this.setState({ selectedBucketlist: id });
     }
   }
-
   renderBucketlists(bucketlists) {
     if (bucketlists.length > 0) {
       return bucketlists.map((bucketlist, index) => (
@@ -91,6 +82,7 @@ class BucketlistView extends Component {
           bucketlist={bucketlist}
           clickEvent={this.clickedItem}
           showItems={(index === (this.state.selectedBucketlist - 1))}
+          delay={index * 500}
         />
       ));
     }
@@ -114,7 +106,15 @@ class BucketlistView extends Component {
     }
     return (
       <section>
-        {currentBucketlists}
+        <ReactCSSTransitionGroup
+          transitionName="fade"
+          transitionEnterTimeout={500}
+          transitionAppear
+          transitionAppearTimeout={500}
+          transitionLeaveTimeout={900}
+        >
+          {currentBucketlists}
+        </ReactCSSTransitionGroup>
       </section>
     );
   }

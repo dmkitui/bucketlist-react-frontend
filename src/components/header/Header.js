@@ -54,11 +54,13 @@ class User extends Component {
     }).then((username) => {
       AuthAPI.updateUsername(username)
         .then((res) => {
+          ModalDialogs.success('Username updated');
         })
         .catch((error) => {
+          ModalDialogs.error(error.message);
         });
     }).catch((error) => {
-      console.log('Errors: ', error);
+      ModalDialogs.error(error.message);
     });
     e.stopPropagation();
   }
@@ -183,7 +185,6 @@ const Titlebox = props => (
 
 class Header extends Component {
   constructor(props) {
-    console.log('Props Header: ', props)
     super(props);
     this.state = {
       loggedIn: this.props.loggedIn,
@@ -198,7 +199,6 @@ class Header extends Component {
     });
   }
   addNewbucketlist(res) {
-    console.log('Added?');
     this.props.addNew(res);
   }
   render() {
