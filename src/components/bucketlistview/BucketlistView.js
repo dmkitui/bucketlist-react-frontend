@@ -23,7 +23,7 @@ class BucketlistView extends Component {
   componentDidMount() {
     const _this = this;
     if (!this.state.loggedIn) {
-      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+//      ModalDialogs.errorStatus('You are not logged in. Log in first.');
       _this.setState({ loading: false });
       return;
     }
