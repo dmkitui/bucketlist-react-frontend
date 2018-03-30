@@ -24,10 +24,12 @@ class ItemsExpandedView extends Component {
     if (newName === '') {
       ModalDialogs.error('New name cannot be blank!');
       document.getElementById(identifier).value = currentName;
+      return;
     }
     if (newName === currentName) {
       ModalDialogs.error('New name cannot be same as old one!');
       document.getElementById(identifier).value = currentName;
+      return;
     }
     document.getElementById(identifier).value = 'Updating...';
     this.setState({ saving: true });
@@ -69,6 +71,8 @@ class ItemsExpandedView extends Component {
                   item: data,
                 });
                 ModalDialogs.success('Item Completed successfully.');
+                const { message, ...updatedItem } = data;
+                this.props.updatedItem(updatedItem);
               }
             })
             .catch((error) => {
@@ -84,32 +88,35 @@ class ItemsExpandedView extends Component {
     const identifier = `${this.props.bucketlistId}-${this.props.item.id}`;
     return (
       <div className="table-rows">
-        <tr>
-          <td className="index-field">{this.props.index + 1}.</td>
-          <td className="item-name">
-            <input
-              onClick={event => this.editName(event)}
-              defaultValue={this.state.item.item_name}
-              id={identifier}
-              disabled={this.state.saving}
-              onKeyUp={(event) => {
-                if (event.key === 'Enter') {
-                  this.saveChanges(event, identifier, this.state.item.item_name);
-                  event.preventDefault();
-                }
-              }}
-            />
-          </td>
-          <td className="date-field">{Helpers.dateTimeFormat(this.state.item.date_created)}</td>
-          <td className="date-field">{Helpers.dateTimeFormat(this.state.item.date_modified)}</td>
-          <td className="status-btn"><button
-            onClick={event => this.completeItem(event, this.state.item.id)}
-            className="state-button btn btn-sm"
-            disabled={this.state.item.done}
-          >{this.state.item.done ? 'Done' : 'Not Done'}
-          </button>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td className="index-field">{this.props.index + 1}.</td>
+            <td className="item-name">
+              <input
+                onClick={event => this.editName(event)}
+                defaultValue={this.state.item.item_name}
+                id={identifier}
+                disabled={this.state.saving}
+                onKeyUp={(event) => {
+                  if (event.key === 'Enter') {
+                    this.saveChanges(event, identifier, this.state.item.item_name);
+                    event.preventDefault();
+                  }
+                }}
+              />
+            </td>
+            <td className="date-field" onClick={event => event.stopPropagation()}>{Helpers.dateTimeFormat(this.state.item.date_created)}</td>
+            <td className="date-field" onClick={event => event.stopPropagation()}>{Helpers.dateTimeFormat(this.state.item.date_modified)}</td>
+            <td className="status-btn" onClick={event => event.stopPropagation()}>
+              <button
+                onClick={event => this.completeItem(event, this.state.item.id)}
+                className="state-button btn btn-sm"
+                disabled={this.state.item.done}
+            >{this.state.item.done ? 'Done' : 'Not Done'}
+            </button>
+            </td>
+          </tr>
+        </tbody>
       </div>
     );
   }
