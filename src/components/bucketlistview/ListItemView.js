@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
-//import * as R from 'ramda';
+import * as R from 'ramda';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './ListItemView.css';
 import Helpers from '../../helpers/Utilities';
@@ -12,11 +12,12 @@ class ItemView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bucketlist: this.props.bucketlists,
+      bucketlist: this.props.bucketlist,
       showButtons: false,
       showItems: false,
       selectedBucketlist: null,
     };
+    this.updatedItem = this.updatedItem.bind(this);
   }
   componentDidMount() {
     this.setState({ showButtons: false });
@@ -31,6 +32,16 @@ class ItemView extends Component {
         showItems: false,
       });
     }
+  }
+  updatedItem(data) {
+    const currentItems = this.props.bucketlist.items;
+    const itemToUpdate = currentItems.filter(item => item.id === data.id)[0];
+    const index = currentItems.indexOf(itemToUpdate);
+
+    const removed = currentItems.splice(index, 1, data);
+    this.setState({
+      bucketlist: currentItems,
+    });
   }
   componentWillAppear(callback) {
     console.log('componentWillAppear');
@@ -207,14 +218,14 @@ class ItemView extends Component {
   renderExpandedItems(bucketlist) {
     const items = bucketlist.items;
     if (items.length > 0) {
-//      const sorted = R.sortBy(R.prop('done'), items);
-//      const sorted2 = R.sortBy(R.prop('id'), sorted);
-      const done = items.filter(item => item.done === true);
-      const notDone = items.filter(item => item.done === false);
-
-      const renderList = notDone.concat(done);
-      return renderList.map((item, index) => (
-        <ItemsExpandedView key={item.id} item={item} index={index} bucketlistId={bucketlist.id} />
+      const sortedItems = R.sortWith([R.ascend(R.prop('done')), R.descend(R.prop('id'))], items);
+      return sortedItems.map((item, index) => (
+        <ItemsExpandedView
+          key={item.id}
+          item={item}
+          index={index}
+          updatedItem={this.updatedItem}
+          bucketlistId={bucketlist.id} />
       ));
     }
     return (
