@@ -1,8 +1,5 @@
 import axios from 'axios';
-import Helpers from '../helpers/Utilities';
 
-
-const source = axios.CancelToken.source();
 const axiosBucketlistManipulations = axios.create({
   baseURL: 'https://flask-api-bucketlist.herokuapp.com/api/v1/bucketlists/',
   timeout: 60000,
