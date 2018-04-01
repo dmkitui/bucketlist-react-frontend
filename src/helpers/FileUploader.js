@@ -17,18 +17,16 @@ class FileUploader extends Component {
     this.onProgress = this.onProgress.bind(this);
   }
   onProgress(e) {
-    let value = Math.floor(e.percent);
-    console.log('% Done: ', value)
-    if(value > 0) {
+    const value = Math.floor(e.percent);
+    if (value > 0) {
       this.setState({
         uploading: true,
-        percentage: value
-      })
-      this.props.status(value)
+        percentage: value,
+      });
+      this.props.status(value);
     } else if(value === 100){
-      console.log('Uploading Done!')
       this.setState({
-        uploading: false
+        uploading: false,
       });
     }
   }
@@ -47,7 +45,6 @@ class FileUploader extends Component {
       }
 
       if (response.body.secure_url !== '') {
-        console.log('RESPONSE URL: ', response.body.secure_url)
         this.setState({
           avatarUrl: response.body.secure_url
         });
@@ -55,13 +52,12 @@ class FileUploader extends Component {
       this.props.onUpload(this.state.avatarUrl);
     });
   }
-  
+
   errorHandler(res) {
-    console.log('ERROR: ', res)
     ModalDialogs.error('Error Uploading Your Avatar. Try Again')
   }
   render() {
-    return(
+    return (
       <Dropzone
         className="dropZone"
         multiple={false}

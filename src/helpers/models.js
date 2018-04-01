@@ -20,6 +20,5 @@ export class User {
     } else {
       this.avatarUrl = avatarUrl;
     }
-    console.log('AVATAR URL in MODELS: ', [avatarUrl, this.avatarUrl]);
   }
 }

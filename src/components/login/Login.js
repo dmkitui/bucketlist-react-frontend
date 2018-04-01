@@ -39,10 +39,8 @@ class Login extends Component {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (re.test(this.state.email)) {
       this.setState({ invalidEmail: false });
-      console.log(`Valid Email ${this.state.email}`);
     } else {
       this.setState({ invalidEmail: true });
-      console.log(`invalid Email ${this.state.email}`);
     }
   }
   loginUser(event) {
@@ -51,11 +49,8 @@ class Login extends Component {
     });
     AuthAPI.login(this.state.email, this.state.password)
       .then((res) => {
-        console.log('LOGIN RESPONSE TOKEN: ', res.data);
         const token = res.data.access_token;
         const userInfo = jwtDecode(token);
-        console.log('DECODED INFO: ', userInfo);
-
         const user = new User(userInfo.sub, userInfo.username, this.state.email, userInfo.avatar); // id, username, email, avatarUrl
         this.setState({
           loading: false,

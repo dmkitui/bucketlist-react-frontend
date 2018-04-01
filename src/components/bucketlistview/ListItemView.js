@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
+import * as R from 'ramda';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './ListItemView.css';
 import Helpers from '../../helpers/Utilities';
 import ItemsExpandedView from './ItemsExpandedView';
@@ -10,11 +12,12 @@ class ItemView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bucketlist: this.props.bucketlists,
+      bucketlist: this.props.bucketlist,
       showButtons: false,
       showItems: false,
       selectedBucketlist: null,
     };
+    this.updatedItem = this.updatedItem.bind(this);
   }
   componentDidMount() {
     this.setState({ showButtons: false });
@@ -30,6 +33,42 @@ class ItemView extends Component {
       });
     }
   }
+  updatedItem(data) {
+    const currentItems = this.props.bucketlist.items;
+    const itemToUpdate = currentItems.filter(item => item.id === data.id)[0];
+    const index = currentItems.indexOf(itemToUpdate);
+
+    const removed = currentItems.splice(index, 1, data);
+    this.setState({
+      bucketlist: currentItems,
+    });
+  }
+  componentWillAppear(callback) {
+    console.log('componentWillAppear');
+    callback();
+  }
+
+  componentDidAppear() {
+    console.log('componentDidAppear');
+  }
+
+  componentWillEnter(callback) {
+    console.log('componentWillEnter');
+    callback();
+  }
+
+  componentDidEnter() {
+    console.log('componentDidEnter');
+  }
+
+  componentWillLeave(callback) {
+    console.log('componentWillLeave');
+    callback();
+  }
+
+  componentDidLeave() {
+    console.log('componentDidLeave');
+  }
   addItem(event, bucketlist) {
     if (!Helpers.isTokenValid()) {
       ModalDialogs.errorStatus('You are not logged in. Log in first.');
@@ -42,12 +81,9 @@ class ItemView extends Component {
       content: { element: 'input', attributes: { placeholder: 'New Item', type: 'text' } },
       ok: 'Add Item',
     }).then((itemName) => {
-      console.log('Item Name: ', itemName);
       if ((itemName === '') || (itemName === 'ok')) {
-        console.log('Nope!!!');
         ModalDialogs.error('Item title cannot be blank!');
       } else {
-        console.log('Proceed to backend...');
         AuthAPI.addItem(bucketlist.id, itemName)
           .then((resp) => {
             if (resp.status === 201) {
@@ -58,19 +94,17 @@ class ItemView extends Component {
               }
               ModalDialogs.success('Item added to bucketlist successfully.');
             } else {
-              console.log('Error: ', resp.status, 'Message: ', resp);
+              ModalDialogs.error(`An Error Occured. ${resp}`);
             }
           }).catch((error) => {
-            console.log('ERRORS: ', error, 'SPECS: ', error.message);
             try {
               if (error.message !== 'Network Error') {
                 ModalDialogs.error(error.response.data.message);
               } else {
-                console.log('MAshida 101!', error);
                 ModalDialogs.error(error.message);
               }
-            } catch (error) {
-              ModalDialogs.error(error.message);
+            } catch (error2) {
+              ModalDialogs.error(error2.message);
             }
           });
       }
@@ -104,14 +138,10 @@ class ItemView extends Component {
       ok: 'Edit',
     })
       .then((newTitle) => {
-        console.log('Value: ', newTitle, 'Old Title: ', title);
         if (newTitle !== '') {
-          console.log('Why are w running?');
           if (newTitle !== title) {
-            console.log('Title changed: ', newTitle);
             AuthAPI.editBucketlistTitle((id), newTitle)
               .then((res) => {
-                console.log('Bucketlist: ', res);
                 ModalDialogs.success('Bucketlist Successfully Updated');
                 bucketlist.date_modified = res.data.date_modified;
                 bucketlist.name = res.data.name;
@@ -119,10 +149,8 @@ class ItemView extends Component {
               })
               .catch((error) => {
                 if (error.response !== undefined) {
-                  console.log('Error 1: ', error);
                   ModalDialogs.error(error.response.data.message);
                 } else {
-                  console.log('Error 2');
                   ModalDialogs.error(error.message);
                 }
               });
@@ -133,7 +161,6 @@ class ItemView extends Component {
           ModalDialogs.error('New Title cannot be blank!');
         }
       }).catch((error) => {
-        console.log('Error: ', error.response);
         ModalDialogs.error(error.response);
         swal.stopLoading();
       });
@@ -153,7 +180,6 @@ class ItemView extends Component {
       ok: 'Delete',
     })
       .then((willDelete) => {
-        console.log('Delete: ', willDelete);
         if (willDelete) {
           AuthAPI.deleteBucketlist(id)
             .then((res) => {
@@ -161,7 +187,6 @@ class ItemView extends Component {
               this.props.updateUI(id);
             })
             .catch((error) => {
-              console.log('Prompt Error: ', error);
               try {
                 ModalDialogs.error(error.response.data.message);
               } catch (error) {
@@ -190,10 +215,17 @@ class ItemView extends Component {
     this.props.clickEvent(id, element);
   }
 
-  renderExpandedItems(items) {
+  renderExpandedItems(bucketlist) {
+    const items = bucketlist.items;
     if (items.length > 0) {
-      return items.map((item, index) => (
-        <ItemsExpandedView key={item.id} item={item} index={index} />
+      const sortedItems = R.sortWith([R.ascend(R.prop('done')), R.descend(R.prop('id'))], items);
+      return sortedItems.map((item, index) => (
+        <ItemsExpandedView
+          key={item.id}
+          item={item}
+          index={index}
+          updatedItem={this.updatedItem}
+          bucketlistId={bucketlist.id} />
       ));
     }
     return (
@@ -204,7 +236,7 @@ class ItemView extends Component {
   }
   render() {
     const bucketlist = this.props.bucketlist;
-    const bucketlistItems = this.renderExpandedItems(bucketlist.items);
+    const bucketlistItems = this.renderExpandedItems(bucketlist);
     return (
       <div
         className={(this.state.showItems) ? 'item-container selected-item container' : 'item-container container'}
@@ -250,7 +282,15 @@ class ItemView extends Component {
                     <td className="status-btn">Status</td>
                   </th>
                   <tbody>
-                    {bucketlistItems}
+                    <ReactCSSTransitionGroup
+                      transitionName="fade"
+                      transitionEnterTimeout={300}
+                      transitionAppear
+                      transitionAppearTimeout={300}
+                      transitionLeaveTimeout={500}
+                    >
+                      {bucketlistItems}
+                    </ReactCSSTransitionGroup>
                   </tbody>
                 </table>
               </div>

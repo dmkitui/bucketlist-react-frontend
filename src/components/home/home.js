@@ -48,9 +48,7 @@ class MainView extends Component {
   }
   scrollManager() {
     const target = document.getElementsByClassName('main-view')[0];
-    console.log('Scrolling?: ', target.clientHeight, 'ScrollHeight: ', target.scrollHeight, ' From Top: ', target.scrollTop);
     if (target.scrollHeight > target.clientHeight) {
-      console.log('Time to scroll?');
       this.setState({
         scrollable: true,
       });
@@ -61,14 +59,12 @@ class MainView extends Component {
     }
 
     if ((target.scrollTop + target.clientHeight) > target.scrollHeight) {
-      console.log('Reached top?');
       document.getElementsByClassName('scroll-indicator-bottom')[0].classList.add('reached-bottom');
     } else {
       document.getElementsByClassName('scroll-indicator-bottom')[0].classList.remove('reached-bottom');
     }
   }
   newBucketlist(res) {
-    console.log('New item added? ', res);
     this.setState({
       newBucketlist: res,
     });
