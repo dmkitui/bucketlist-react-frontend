@@ -110,10 +110,11 @@ class ItemsExpandedView extends Component {
             <td className="status-btn" onClick={event => event.stopPropagation()}>
               <button
                 onClick={event => this.completeItem(event, this.state.item.id)}
-                className="state-button btn btn-sm"
+                className={`state-button btn btn-sm ${this.state.item.done ? 'done-item' : 'not-done-item'}`}
                 disabled={this.state.item.done}
-            >{this.state.item.done ? 'Done' : 'Not Done'}
-            </button>
+              >
+                {this.state.item.done ? 'Done' : 'Complete'}
+              </button>
             </td>
           </tr>
         </tbody>

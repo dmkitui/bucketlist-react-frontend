@@ -175,3 +175,8 @@ th {
 .no-items {
     margin-bottom: 30px;
 }
+
+.not-done-item:hover {
+    background-color: green;
+    color: white;
+}
