@@ -91,7 +91,7 @@ class ItemsExpandedView extends Component {
         <tbody>
           <tr>
             <td className="index-field">{this.props.index + 1}.</td>
-            <td className="item-name">
+            <td className="item-name" title="Click To Edit">
               <input
                 onClick={event => this.editName(event)}
                 defaultValue={this.state.item.item_name}
