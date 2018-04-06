@@ -73,7 +73,12 @@ class MainView extends Component {
     return (
       <div className="page">
         <div className="header">
-          <Header user={this.state.user} loggedIn={this.state.loggedIn} updateLoggedInState={this.updateLoginStatus} addNew={this.newBucketlist} />
+          <Header
+            user={this.state.user}
+            loggedIn={this.state.loggedIn}
+            updateLoggedInState={this.updateLoginStatus}
+            addNew={this.newBucketlist}
+          />
         </div>
         <hr />
         <span className="scroll-indicator-top" hidden={!this.state.scrollable} />
