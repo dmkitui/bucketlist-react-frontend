@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import scrollIntoView from 'scroll-into-view';
+import 'font-awesome/css/font-awesome.min.css';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import './BucketlistView.css';
 import ItemView from './ListItemView';
 import ModalDialogs from '../../helpers/Dialogs';
 import Animation from '../../helpers/animation';
 import AuthAPI from '../../api/Auth';
+
 
 class BucketlistView extends Component {
   constructor(props) {
@@ -16,6 +18,10 @@ class BucketlistView extends Component {
       loading: true,
       selectedBucketlist: null,
       loggedIn: this.props.loggedIn,
+      searchError: false,
+      showSearch: false,
+      query: '',
+      searchResults: [],
     };
     this.clickedItem = this.clickedItem.bind(this);
     this.updateAfterChanges = this.updateAfterChanges.bind(this);
@@ -23,7 +29,7 @@ class BucketlistView extends Component {
   componentDidMount() {
     const _this = this;
     if (!this.state.loggedIn) {
-//      ModalDialogs.errorStatus('You are not logged in. Log in first.');
+      //      ModalDialogs.errorStatus('You are not logged in. Log in first.');
       _this.setState({ loading: false });
       return;
     }
@@ -33,14 +39,13 @@ class BucketlistView extends Component {
         if (data.length > 0) {
           const pageInfo = data.pop();
         }
-        // Sort the data by ID.
         _this.setState({
           bucketlists: data,
           loading: false,
         });
       }).catch((error) => {
         const errorText = error.message;
-        this.state.loading = false;
+        this.setState({ loading: false });
         ModalDialogs.error(errorText);
       });
   }
@@ -53,7 +58,7 @@ class BucketlistView extends Component {
       bucketlists: this.state.bucketlists,
     });
     const el = ReactDOM.findDOMNode(this.selectedItem);
-//    el.click();
+    el.click();
   }
 
   updateAfterChanges(id) {
@@ -61,6 +66,41 @@ class BucketlistView extends Component {
     const indexToDelete = this.state.bucketlists.indexOf(bucketlist);
     this.state.bucketlists.splice(indexToDelete, 1);
     this.setState({ bucketlists: this.state.bucketlists });
+  }
+  searchFocus(evt) {
+    evt.stopPropagation();
+    this.setState({
+      searchError: false,
+      showSearch: false,
+    });
+  }
+
+  search(evt) {
+    const searchTerms = evt.target.value;
+    if (evt.key === 'Enter' || searchTerms === '') {
+      this.setState({
+        searchError: true,
+        showSearch: false,
+      });
+      return;
+    }
+    this.setState({
+      searchError: false,
+      showSearch: true,
+    });
+
+    // Search in the already loaded bucketlists
+
+    const hits = this.state.bucketlists.filter(x => x.name.toLowerCase().search(searchTerms) !== -1);
+    if (hits.length > 0) {
+      this.setState({
+        searchResults: hits,
+      });
+    } else {
+      this.setState({
+        searchResults: [],
+      });
+    }
   }
 
   clickedItem(id, el) {
@@ -70,6 +110,33 @@ class BucketlistView extends Component {
       scrollIntoView(el, { time: 500 });
       this.setState({ selectedBucketlist: id });
     }
+  }
+
+  showBucketlists() {
+    if (this.state.showSearch) {
+      return (
+        <ReactCSSTransitionGroup
+          transitionName="search-results"
+          transitionEnterTimeout={100}
+          transitionAppear
+          transitionAppearTimeout={100}
+          transitionLeaveTimeout={200}
+        >
+          { this.renderBucketlists(this.state.searchResults) }
+        </ReactCSSTransitionGroup>
+      );
+    }
+    return (
+        <ReactCSSTransitionGroup
+          transitionName="fade"
+          transitionEnterTimeout={500}
+          transitionAppear
+          transitionAppearTimeout={500}
+          transitionLeaveTimeout={900}
+        >
+          { this.renderBucketlists(this.state.bucketlists) }
+        </ReactCSSTransitionGroup>
+    );
   }
   renderBucketlists(bucketlists) {
     if (bucketlists.length > 0) {
@@ -88,12 +155,13 @@ class BucketlistView extends Component {
     }
     return (
       <div className="empty-list">
-        <span> No bucketlists to display</span>
+        {this.state.showSearch ?
+          <span> No Bucketlists Match The Search Parameters</span> :
+          <span> No Items To Display </span> }
       </div>
     );
   }
   render() {
-    const currentBucketlists = this.renderBucketlists(this.state.bucketlists);
     if (this.state.loading) {
       return (
         <section>
@@ -106,15 +174,34 @@ class BucketlistView extends Component {
     }
     return (
       <section>
-        <ReactCSSTransitionGroup
-          transitionName="fade"
-          transitionEnterTimeout={500}
-          transitionAppear
-          transitionAppearTimeout={500}
-          transitionLeaveTimeout={900}
-        >
-          {currentBucketlists}
-        </ReactCSSTransitionGroup>
+        <div className="bucketlist-container">
+          <div className="search-bar" disabled={this.state.bucketlists.length === 0}>
+            { this.state.showSearch ? <span>SEARCH RESULTS</span> : ''}
+            <div className="search-box">
+              <span className="icon"><i className="fa fa-search" /></span>
+              <input
+                className={this.state.searchError ? 'has-error' : ''}
+                onFocus={event => this.searchFocus(event)}
+                onClick={event => this.searchFocus(event)}
+                onChange={event => this.search(event)}
+                placeholder="Search..."
+                id="search"
+                type="text"
+                onKeyUp={(event) => {
+                  if (event.key === 'Enter') {
+                    this.search(event);
+                    event.preventDefault();
+                  }
+                }}
+              />
+            </div>
+          </div>
+          <div className="items">
+            <div className="scrollable-container">
+              {this.showBucketlists()}
+            </div>
+          </div>
+        </div>
       </section>
     );
   }
