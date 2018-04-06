@@ -178,25 +178,30 @@ class BucketlistView extends Component {
     return (
       <section>
         <div className="bucketlist-container">
-          <div className="search-bar" disabled={this.state.bucketlists.length === 0}>
-            { this.state.showSearch ? <span className="search-title">SEARCH RESULTS</span> : ''}
-            <div className="search-box">
-              <span className="icon"><i className="fa fa-search" /></span>
-              <input
-                className={this.state.searchError ? 'has-error' : ''}
-                onFocus={event => this.searchFocus(event)}
-                onClick={event => this.searchFocus(event)}
-                onChange={event => this.search(event)}
-                placeholder="Search..."
-                id="search"
-                type="text"
-                onKeyUp={(event) => {
-                  if (event.key === 'Enter') {
-                    this.search(event);
-                    event.preventDefault();
-                  }
-                }}
-              />
+          <div className="search-bar row col-12" disabled={this.state.bucketlists.length === 0}>
+            <div className="col-4" />
+            <div className="col-4">
+              { this.state.showSearch ? <span className="search-title">SEARCH RESULTS</span> : ''}
+            </div>
+            <div className="search-box col-4">
+              <div className="search-div">
+                <span className="icon"><i className="fa fa-search" /></span>
+                <input
+                  className={this.state.searchError ? 'has-error' : ''}
+                  onFocus={event => this.searchFocus(event)}
+                  onClick={event => this.searchFocus(event)}
+                  onChange={event => this.search(event)}
+                  placeholder="Search..."
+                  id="search"
+                  type="text"
+                  onKeyUp={(event) => {
+                    if (event.key === 'Enter') {
+                      this.search(event);
+                      event.preventDefault();
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="items">
