@@ -60,7 +60,8 @@
     margin: 15px 0 0 0;
 }
 .empty-list {
-    margin-top: 80px;
+    margin-top: 10px;
+    padding-top: 90px;
 }
 
 .action-buttons > .btn {
