@@ -50,6 +50,10 @@ const AuthAPI = {
     const url = `${parseInt(bucketlistId, 10)}/items/${parseInt(itemId, 10)}`;
     return axiosBucketlistManipulations.put(url, { item_name: newName });
   },
+  search(searchTerms) {
+    const url = `?q=${searchTerms}`;
+    return axiosBucketlistManipulations.get(url);
+  },
 };
 export default AuthAPI;
 
