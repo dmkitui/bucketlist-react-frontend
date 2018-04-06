@@ -66,17 +66,10 @@ class BucketlistView extends Component {
     this.state.bucketlists.splice(indexToDelete, 1);
     this.setState({ bucketlists: this.state.bucketlists });
   }
-  searchFocus(evt) {
-    evt.stopPropagation();
-    this.setState({
-      searchError: false,
-      showSearch: false,
-    });
-  }
 
   search(evt) {
-    const searchTerms = evt.target.value.toLowerCase();
-    if (searchTerms === '' || searchTerms === ' ') {
+    const searchTerms = evt.target.value.toLowerCase().trim();
+    if (searchTerms === '') {
       this.setState({ showSearch: false });
       if (evt.key === 'Enter') {
         this.setState({ searchError: true });
@@ -89,10 +82,9 @@ class BucketlistView extends Component {
       showSearch: true,
       selectedBucketlist: null,
     });
-
     // Search in the already loaded bucketlists
-
-    const hits = this.state.bucketlists.filter(x => x.name.toLowerCase().search(searchTerms) !== -1);
+    const hits = this.state.bucketlists
+      .filter(x => x.name.toLowerCase().search(searchTerms) !== -1);
     if (hits.length > 0) {
       this.setState({
         searchResults: hits,
@@ -130,15 +122,15 @@ class BucketlistView extends Component {
       );
     }
     return (
-        <ReactCSSTransitionGroup
-          transitionName="fade"
-          transitionEnterTimeout={500}
-          transitionAppear
-          transitionAppearTimeout={500}
-          transitionLeaveTimeout={900}
-        >
-          { this.renderBucketlists(this.state.bucketlists) }
-        </ReactCSSTransitionGroup>
+      <ReactCSSTransitionGroup
+        transitionName="fade"
+        transitionEnterTimeout={500}
+        transitionAppear
+        transitionAppearTimeout={500}
+        transitionLeaveTimeout={900}
+      >
+        { this.renderBucketlists(this.state.bucketlists) }
+      </ReactCSSTransitionGroup>
     );
   }
   renderBucketlists(bucketlists) {
@@ -188,8 +180,6 @@ class BucketlistView extends Component {
                 <span className="icon"><i className="fa fa-search" /></span>
                 <input
                   className={this.state.searchError ? 'has-error' : ''}
-                  onFocus={event => this.searchFocus(event)}
-                  onClick={event => this.searchFocus(event)}
                   onChange={event => this.search(event)}
                   placeholder="Search..."
                   id="search"
