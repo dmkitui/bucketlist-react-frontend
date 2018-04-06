@@ -53,12 +53,15 @@
   height: 40px;
   padding-left: 45px;
   width: 270px;
-  margin: 10px 90px 0 auto;
+  margin: 10px 50px 0 auto;
 }
 .search-box input#search:hover, .search-box input#search:focus, .search-box input#search:active {
   outline:none;
   background: #ffffff;
   }
+.search-div {
+    margin-left: 250px;
+}
 
 .search-box .icon {
   position: absolute;
@@ -73,7 +76,7 @@
   z-index: 1;
 }
 .has-error {
-    border: solid 2px red !important;
+    border: solid 1px red !important;
 }
 .search-results-enter {
   opacity: 0.01;
@@ -100,4 +103,9 @@
 
 .search-results-appear.search-results-appear-active {
   opacity: 1;
+}
+.search-title {
+  align-self: center;
+  font-size: 1.5em;
+  color: green;
 }
