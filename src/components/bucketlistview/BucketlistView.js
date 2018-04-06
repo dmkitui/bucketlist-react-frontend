@@ -20,7 +20,6 @@ class BucketlistView extends Component {
       loggedIn: this.props.loggedIn,
       searchError: false,
       showSearch: false,
-      query: '',
       searchResults: [],
     };
     this.clickedItem = this.clickedItem.bind(this);
@@ -76,17 +75,19 @@ class BucketlistView extends Component {
   }
 
   search(evt) {
-    const searchTerms = evt.target.value;
-    if (evt.key === 'Enter' || searchTerms === '') {
-      this.setState({
-        searchError: true,
-        showSearch: false,
-      });
+    const searchTerms = evt.target.value.toLowerCase();
+    if (searchTerms === '' || searchTerms === ' ') {
+      this.setState({ showSearch: false });
+      if (evt.key === 'Enter') {
+        this.setState({ searchError: true });
+        return;
+      }
       return;
     }
     this.setState({
       searchError: false,
       showSearch: true,
+      selectedBucketlist: null,
     });
 
     // Search in the already loaded bucketlists
@@ -95,10 +96,12 @@ class BucketlistView extends Component {
     if (hits.length > 0) {
       this.setState({
         searchResults: hits,
+        searchError: false,
       });
     } else {
       this.setState({
         searchResults: [],
+        searchError: true,
       });
     }
   }
@@ -176,7 +179,7 @@ class BucketlistView extends Component {
       <section>
         <div className="bucketlist-container">
           <div className="search-bar" disabled={this.state.bucketlists.length === 0}>
-            { this.state.showSearch ? <span>SEARCH RESULTS</span> : ''}
+            { this.state.showSearch ? <span className="search-title">SEARCH RESULTS</span> : ''}
             <div className="search-box">
               <span className="icon"><i className="fa fa-search" /></span>
               <input
