@@ -13,7 +13,8 @@ const axiosUpdateProfile = axios.create({
 });
 const AuthAPI = {
   getBucketlists() {
-    return axiosBucketlistManipulations.get('');
+    const url = '?limit=100';
+    return axiosBucketlistManipulations.get(url);
   },
   login(email, password) {
     const headers = new Headers({ 'Content-Type': 'application/json' });
