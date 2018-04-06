@@ -52,14 +52,18 @@ class BucketlistView extends Component {
     if (nextProps.newItem === this.props.newItem) {
       return;
     }
-    this.state.bucketlists.push(nextProps.newItem);
+    const current = this.state.bucketlists;
+    current.push(nextProps.newItem);
     this.setState({
-      bucketlists: this.state.bucketlists,
+      bucketlists: current,
     });
     const el = ReactDOM.findDOMNode(this.selectedItem);
     el.click();
   }
-
+  componentWillUnmount() {
+    console.log('Unmounting...');
+    this.setState({});
+  }
   updateAfterChanges(id) {
     const bucketlist = this.state.bucketlists.filter(x => (x.id === id))[0];
     const indexToDelete = this.state.bucketlists.indexOf(bucketlist);
@@ -152,7 +156,7 @@ class BucketlistView extends Component {
       <div className="empty-list">
         {this.state.showSearch ?
           <span> No Bucketlists Match The Search Parameters</span> :
-          <span> No Items To Display </span> }
+          <span> No Items Yet... </span> }
       </div>
     );
   }
@@ -170,7 +174,7 @@ class BucketlistView extends Component {
     return (
       <section>
         <div className="bucketlist-container">
-          <div className="search-bar row col-12" disabled={this.state.bucketlists.length === 0}>
+          <div className={this.state.bucketlists.length > 0 ? 'search-bar row col-12' : 'no-bucketlists'}>
             <div className="col-4" />
             <div className="col-4">
               { this.state.showSearch ? <span className="search-title">SEARCH RESULTS</span> : ''}
