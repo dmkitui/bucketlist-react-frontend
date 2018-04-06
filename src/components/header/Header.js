@@ -54,7 +54,10 @@ class User extends Component {
     }).then((username) => {
       AuthAPI.updateUsername(username)
         .then((res) => {
+        console.log('RES: ', res)
           ModalDialogs.success('Username updated');
+          this.state.user.username = username;
+          this.setState({ user: this.state.user });
         })
         .catch((error) => {
           ModalDialogs.error(error.message);
@@ -80,8 +83,7 @@ class User extends Component {
       dangerMode: true,
     }).then((logOut) => {
       if (logOut) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.clear();
         this.props.logout(false);
         swal('Logged Out Successfully', {
           icon: 'success',
