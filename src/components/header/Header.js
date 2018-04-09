@@ -54,7 +54,6 @@ class User extends Component {
     }).then((username) => {
       AuthAPI.updateUsername(username)
         .then((res) => {
-        console.log('RES: ', res)
           ModalDialogs.success('Username updated');
           this.state.user.username = username;
           this.setState({ user: this.state.user });
