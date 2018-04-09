@@ -76,7 +76,7 @@
   z-index: 1;
 }
 .has-error {
-    border: solid 1px red !important;
+  border: solid 1px red !important;
 }
 .search-results-enter {
   opacity: 0.01;
@@ -104,10 +104,20 @@
 .search-results-appear.search-results-appear-active {
   opacity: 1;
 }
-.search-title {
+.reveal-title {
   align-self: center;
   font-size: 1.5em;
   color: green;
+  position: relative;
+  opacity: 0.9;
+  transition: all 0.1s ease-in-out;
+  -webkit-transition: all 0.1s ease-in-out; /** Chrome & Safari **/
+  -moz-transition: all 0.1s ease-in-out; /** Firefox **/
+  -o-transition: all 0.1s ease-in-out; /** Opera **/
+}
+
+.search-title {
+  opacity: 0;
 }
 .no-bucketlists {
   display: none;

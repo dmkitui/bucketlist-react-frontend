@@ -177,7 +177,7 @@ class BucketlistView extends Component {
           <div className={this.state.bucketlists.length > 0 ? 'search-bar row col-12' : 'no-bucketlists'}>
             <div className="col-4" />
             <div className="col-4">
-              { this.state.showSearch ? <span className="search-title">SEARCH RESULTS</span> : ''}
+              <span className={this.state.showSearch ? 'reveal-title' : 'search-title'}>SEARCH RESULTS</span>
             </div>
             <div className="search-box col-4">
               <div className="search-div">
